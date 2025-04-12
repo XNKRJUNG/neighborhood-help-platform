@@ -1,0 +1,47 @@
+# ================================
+# Gradle (Kotlin)
+# ================================
+.gradle/
+build/
+.kotlinc/
+out/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Gradle Wrapper JAR (keep it tracked)
+!gradle/wrapper/gradle-wrapper.jar
+
+# ================================
+# IntelliJ IDEA
+# ================================
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+
+# ================================
+# Logs & Temp
+# ================================
+*.log
+*.tmp
+*.bak
+*.swp
+
+# ================================
+# Java/Kotlin Output
+# ================================
+*.class
+*.jar
+*.war
+*.ear
+
+# ================================
+# Optional – Configs/Secrets
+# ================================
+.env
+application.properties
+application.yml
+application-*.yml
+application-*.properties
