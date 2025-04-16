@@ -1,7 +1,6 @@
 package site.shresthacyrus.neighborhoodhelpplatform.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import site.shresthacyrus.neighborhoodhelpplatform.common.RoleEnum;
@@ -18,9 +17,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+    private String username;
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String phone;
 
     @Column(nullable = false)
@@ -32,9 +33,9 @@ public class User {
     @Column(nullable = false)
     private RoleEnum role; // SEEKER or HELPER
 
-    private Boolean isMobileVerified;
-    private Boolean isBackgroundVerified;
-    private Boolean isPaymentVerified;
+    private Boolean isMobileVerified = false;
+    private Boolean isBackgroundVerified = false;
+    private Boolean isPaymentVerified = false;
 
     @Column(nullable = false)
     private String passwordHash;
@@ -72,19 +73,19 @@ public class User {
      @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
      private List<Photo> photos;
 
-    public User(String email, String phone, String legalFirstName, String legalLastName, RoleEnum role, String passwordHash) {
-        this.email = email;
-        this.phone = phone;
-        this.legalFirstName = legalFirstName;
-        this.legalLastName = legalLastName;
-        this.role = role;
-        this.passwordHash = passwordHash;
-
-        // Default verifications to false
-        this.isMobileVerified = false;
-        this.isBackgroundVerified = false;
-        this.isPaymentVerified = false;
-    }
+//    public User(String email, String phone, String legalFirstName, String legalLastName, RoleEnum role, String passwordHash) {
+//        this.email = email;
+//        this.phone = phone;
+//        this.legalFirstName = legalFirstName;
+//        this.legalLastName = legalLastName;
+//        this.role = role;
+//        this.passwordHash = passwordHash;
+//
+//        // Default verifications to false
+//        this.isMobileVerified = false;
+//        this.isBackgroundVerified = false;
+//        this.isPaymentVerified = false;
+//    }
 
     public String getLegalFullName() {
         return (legalFirstName + " " + legalLastName).trim();
