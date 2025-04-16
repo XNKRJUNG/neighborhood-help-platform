@@ -3,15 +3,18 @@ package site.shresthacyrus.neighborhoodhelpplatform.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import site.shresthacyrus.neighborhoodhelpplatform.common.RoleEnum;
 
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
 @Data
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -73,23 +76,38 @@ public class User {
      @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
      private List<Photo> photos;
 
-//    public User(String email, String phone, String legalFirstName, String legalLastName, RoleEnum role, String passwordHash) {
-//        this.email = email;
-//        this.phone = phone;
-//        this.legalFirstName = legalFirstName;
-//        this.legalLastName = legalLastName;
-//        this.role = role;
-//        this.passwordHash = passwordHash;
-//
-//        // Default verifications to false
-//        this.isMobileVerified = false;
-//        this.isBackgroundVerified = false;
-//        this.isPaymentVerified = false;
-//    }
+    public User(String username, String email, String phone, String legalFirstName, String legalLastName, RoleEnum role, String passwordHash) {
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.legalFirstName = legalFirstName;
+        this.legalLastName = legalLastName;
+        this.role = role;
+        this.passwordHash = passwordHash;
+
+        // Default verifications to false
+        this.isMobileVerified = false;
+        this.isBackgroundVerified = false;
+        this.isPaymentVerified = false;
+    }
 
     public String getLegalFullName() {
         return (legalFirstName + " " + legalLastName).trim();
     }
 
+    // ROLES AND PERMISSIONS
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
+    }
 
+    @Override
+    public String getPassword() {
+        return passwordHash;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
 }

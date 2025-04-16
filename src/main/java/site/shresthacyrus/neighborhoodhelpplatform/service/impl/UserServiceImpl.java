@@ -23,30 +23,36 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        // Check whether user already exists
-        Optional<User> optionalUser = userRepository.findByUsername(userRequestDto.username());
-        if (optionalUser.isPresent()) {
-            throw new DuplicateUserException("User already exists by this username: " + userRequestDto.username());
-        }
+//    @Override
+//    public UserResponseDto createUser(UserRequestDto userRequestDto) {
+//        // Check whether user already exists
+//        Optional<User> optionalUser = userRepository.findByUsername(userRequestDto.username());
+//        if (optionalUser.isPresent()) {
+//            throw new DuplicateUserException("User already exists by this username: " + userRequestDto.username());
+//        }
+//
+//        // Map DTO to entity
+//        User user = userMapper.userRequestDtoToUser(userRequestDto);
+//
+//        // Set hashed password
+//        String hashedPassword = passwordEncoder.encode(userRequestDto.password());
+//        user.setPasswordHash(hashedPassword);
+//
+//        // Save user
+//        User savedUser = userRepository.save(user);
+//
+//        return userMapper.userToUserResponseDto(savedUser);
+//    }
 
-        // Map DTO to entity
-        User user = userMapper.userRequestDtoToUser(userRequestDto);
-
-        // Set hashed password
-        String hashedPassword = passwordEncoder.encode(userRequestDto.password());
-        user.setPasswordHash(hashedPassword);
-
-        // Save user
-        User savedUser = userRepository.save(user);
-
-        return userMapper.userToUserResponseDto(savedUser);
-    }
-
-    @Override
-    public List<UserResponseDto> findAllUsers() {
-        List<User> users = userRepository.findAll();
-        return userMapper.userToUserResponseDtoList(users);
-    }
+//    @Override
+//    public List<UserResponseDto> findAllUsers() {
+//        List<User> users = userRepository.findAll();
+//        return userMapper.userToUserResponseDtoList(users);
+//    }
+@Override
+public List<UserResponseDto> findAllUsers() {
+    List<User> users = userRepository.findAll();
+    System.out.println("Fetched from DB: " + users.size());
+    return userMapper.userToUserResponseDtoList(users);
+}
 }
