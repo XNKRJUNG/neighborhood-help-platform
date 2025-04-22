@@ -1,5 +1,6 @@
 package site.shresthacyrus.neighborhoodhelpplatform.auth.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,14 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<AuthenticationResponseDto> registerUser(@RequestBody RegisterRequestDto registerRequestDto) {
+    public ResponseEntity<AuthenticationResponseDto> registerUser(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
         // call service method, register(authenticationRequestDto)
         AuthenticationResponseDto authenticationResponseDto = authenticationService.register(registerRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(authenticationResponseDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponseDto> authenticateUser(@RequestBody AuthenticationRequestDto authenticationRequestDto) {
+    public ResponseEntity<AuthenticationResponseDto> authenticateUser(@Valid @RequestBody AuthenticationRequestDto authenticationRequestDto) {
         // call a service method, authenticate(authenticationRequestDto)
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(authenticationRequestDto));
     }

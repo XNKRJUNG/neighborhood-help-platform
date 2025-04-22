@@ -12,6 +12,7 @@ import site.shresthacyrus.neighborhoodhelpplatform.auth.dto.request.RegisterRequ
 import site.shresthacyrus.neighborhoodhelpplatform.auth.dto.response.AuthenticationResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.auth.service.AuthenticationService;
 import site.shresthacyrus.neighborhoodhelpplatform.config.JwtService;
+import site.shresthacyrus.neighborhoodhelpplatform.exception.user.DuplicateUserException;
 import site.shresthacyrus.neighborhoodhelpplatform.model.User;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.UserRepository;
 
@@ -41,22 +42,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
    @Override
    public AuthenticationResponseDto register(RegisterRequestDto registerRequestDto) {
 
-       // Create a User object
+       // Validate uniqueness
+       if (userRepository.findByUsername(registerRequestDto.username()).isPresent()) {
+           throw new DuplicateUserException("Username already taken: " + registerRequestDto.username());
+       }
+       if (userRepository.findByEmail(registerRequestDto.email()).isPresent()) {
+           throw new DuplicateUserException("Email already registered: " + registerRequestDto.email());
+       }
+       if (userRepository.findByPhone(registerRequestDto.phone()).isPresent()) {
+           throw new DuplicateUserException("Phone already registered: " + registerRequestDto.phone());
+       }
+
        User user = new User(
                registerRequestDto.username(),
                registerRequestDto.email(),
                registerRequestDto.phone(),
                registerRequestDto.legalFirstName(),
-               registerRequestDto.legalFirstName(),
+               registerRequestDto.legalLastName(),
                registerRequestDto.role(),
                passwordEncoder.encode(registerRequestDto.password())
        );
-       // Save it in DB
-       User registeredUser = userRepository.save(user);
 
-       // Generate token for this User
-       String token = jwtService.generateToken(registeredUser); // Write logic
+       User registeredUser = userRepository.save(user);
+       String token = jwtService.generateToken(registeredUser);
 
        return new AuthenticationResponseDto(token);
    }
+
 }
