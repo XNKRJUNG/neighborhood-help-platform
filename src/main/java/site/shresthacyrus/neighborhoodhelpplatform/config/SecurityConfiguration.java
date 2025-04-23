@@ -27,23 +27,16 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(CsrfConfigurer::disable) // As JWT is state-less, we can disable CSRF
-                .authorizeHttpRequests(
-                        authorizeRequests -> authorizeRequests
-                                .requestMatchers("/api/v1/auth/*").permitAll()
-//                                .requestMatchers("/api/v1/auth/sign-up").permitAll()
-//                                .requestMatchers("/api/v1/auth/authenticate").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
-                                .requestMatchers("/api/v1/seeker/**").hasAnyRole(RoleEnum.ADMIN.name(),RoleEnum.SEEKER.name())
-                                .requestMatchers("/api/v1/helper/**").hasAnyRole(RoleEnum.ADMIN.name(),RoleEnum.HELPER.name())
-                                .requestMatchers("/api/v1/admin/**").hasAnyRole(RoleEnum.ADMIN.name())
-                                .requestMatchers("/api/v1/helper/admin-write").hasAuthority(
-                                        PermissionEnum.ADMIN_WRITE.getPermission()
-                                )
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/v1/auth/**").permitAll() // login, signup
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll() // public user profile
+                        .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()  // public job browsing
+                        .anyRequest().authenticated() // everything else requires auth
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider)
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         return http.build();
     }
 

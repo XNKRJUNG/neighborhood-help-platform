@@ -20,19 +20,12 @@ import java.util.List;
 public class UserController {
 
     public final UserService userService;
-    public final UserRepository userRepository;
-
 
     // Get all Users
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> getAllUsers(){
         List<UserResponseDto> userResponseDtos = userService.findAllUsers();
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDtos);
-    }
-
-    @GetMapping("/debug/users/raw")
-    public List<User> getRawUsers() {
-        return userRepository.findAll();
     }
 
     // Create a User
