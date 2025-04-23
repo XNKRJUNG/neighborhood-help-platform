@@ -3,7 +3,7 @@ package site.shresthacyrus.neighborhoodhelpplatform.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.shresthacyrus.neighborhoodhelpplatform.auth.helper.AuthUtils;
+import site.shresthacyrus.neighborhoodhelpplatform.auth.util.AuthUtils;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobRequestDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.response.job.JobResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.job.DuplicateJobTitleException;
@@ -34,10 +34,12 @@ public class JobServiceImpl implements JobService {
         User seeker = AuthUtils.getCurrentUser();
 
         // Check whether job already exists
-        Job existingJob = jobRepository.findByTitleIgnoreCaseAndSeekerId(jobRequestDto.title(), seeker.getId());
-        if (existingJob != null) {
-            throw new DuplicateJobTitleException("Job with title " + jobRequestDto.title() + " already exists by this seeker: " + seeker.getLegalFullName());
-        }
+        jobRepository.findByTitleIgnoreCaseAndSeekerId(jobRequestDto.title(), seeker.getId())
+                .ifPresent(existingJob -> {
+                    throw new DuplicateJobTitleException(
+                            "Job with title " + jobRequestDto.title() + " already exists by this seeker: " + seeker.getLegalFullName()
+                    );
+                });
 
         Job mappedJob = jobMapper.jobRequestDtoToJob(jobRequestDto);
         Skill existingSkill = skillRepository.findById(jobRequestDto.skillId())

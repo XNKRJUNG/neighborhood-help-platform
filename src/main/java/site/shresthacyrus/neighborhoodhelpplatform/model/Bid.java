@@ -17,7 +17,7 @@ public class Bid {
     @Column(name = "bid_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
     @Column(columnDefinition = "TEXT")
     private String message;

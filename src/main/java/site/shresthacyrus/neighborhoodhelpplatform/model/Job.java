@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import site.shresthacyrus.neighborhoodhelpplatform.common.JobStatusEnum;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "jobs")
@@ -32,9 +32,10 @@ public class Job {
     @Column(nullable = false)
     private String zipCode;
 
-    @Column(nullable = false)
-    private Double minPrice;
-    private Double maxPrice;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal minPrice;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal maxPrice;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

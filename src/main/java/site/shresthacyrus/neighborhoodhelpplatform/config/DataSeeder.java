@@ -16,6 +16,7 @@ import site.shresthacyrus.neighborhoodhelpplatform.repository.SkillRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.UserRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.util.JobIdGenerator;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -73,8 +74,8 @@ public class DataSeeder {
                 job1.setTitle("Fix leaky faucet");
                 job1.setDescription("Kitchen sink faucet dripping for a week.");
                 job1.setZipCode("90210");
-                job1.setMinPrice(50.0);
-                job1.setMaxPrice(100.0);
+                job1.setMinPrice(BigDecimal.valueOf(50.00));
+                job1.setMaxPrice(BigDecimal.valueOf(50.00));
                 job1.setCreatedAt(LocalDateTime.now());
                 job1.setStatus(JobStatusEnum.OPEN);
                 job1.setSeeker(seeker);
@@ -86,8 +87,8 @@ public class DataSeeder {
                 job2.setTitle("Install ceiling light");
                 job2.setDescription("Need help installing a new ceiling light in living room.");
                 job2.setZipCode("90210");
-                job2.setMinPrice(60.0);
-                job2.setMaxPrice(120.0);
+                job2.setMinPrice(BigDecimal.valueOf(60.00));
+                job2.setMaxPrice(BigDecimal.valueOf(120.00));
                 job2.setCreatedAt(LocalDateTime.now());
                 job2.setStatus(JobStatusEnum.OPEN);
                 job2.setSeeker(seeker);
