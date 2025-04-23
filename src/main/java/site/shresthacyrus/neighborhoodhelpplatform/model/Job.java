@@ -7,6 +7,7 @@ import site.shresthacyrus.neighborhoodhelpplatform.common.JobStatusEnum;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "jobs")
@@ -19,6 +20,9 @@ public class Job {
     @Column(name = "job_id")
     private Long id;
 
+    @Column(name = "public_id", unique = true, nullable = false, updatable = false)
+    private String publicId;
+
     @Column(nullable = false)
     private String title;
 
@@ -28,6 +32,7 @@ public class Job {
     @Column(nullable = false)
     private String zipCode;
 
+    @Column(nullable = false)
     private Double minPrice;
     private Double maxPrice;
 
@@ -46,7 +51,7 @@ public class Job {
     */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "skill_id", nullable = false)
-    private Skill category;
+    private Skill skill;
 
     // Seeker who posted the job
     @ManyToOne(fetch = FetchType.EAGER)
@@ -79,18 +84,5 @@ public class Job {
             this.status = JobStatusEnum.OPEN;
         }
     }
-
-
-//    public Job(String title, String description, String category, String zipCode,
-//               Double minPrice, Double maxPrice, User seeker) {
-//        this.title = title;
-//        this.description = description;
-//        this.category = category;
-//        this.zipCode = zipCode;
-//        this.minPrice = minPrice;
-//        this.maxPrice = maxPrice;
-//        this.seeker = seeker;
-//        this.status = JobStatusEnum.OPEN;
-//    }
 
 }

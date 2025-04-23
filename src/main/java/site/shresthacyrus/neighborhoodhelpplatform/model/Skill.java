@@ -27,6 +27,11 @@ public class Skill {
     private List<User> users;
 
     // Jobs categorized under this skill
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY)
     private List<Job> jobs;
+
+    // For seeding purposes
+    public Skill(String name) {
+        this.name = name;
+    }
 }
