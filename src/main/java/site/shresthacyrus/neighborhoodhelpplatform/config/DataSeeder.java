@@ -14,7 +14,7 @@ import site.shresthacyrus.neighborhoodhelpplatform.model.User;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.JobRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.SkillRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.UserRepository;
-import site.shresthacyrus.neighborhoodhelpplatform.util.JobIdGenerator;
+import site.shresthacyrus.neighborhoodhelpplatform.util.JobIdGeneratorUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ public class DataSeeder {
     private final SkillRepository skillRepository;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
-    private final JobIdGenerator jobIdGenerator;
+    private final JobIdGeneratorUtil jobIdGeneratorUtil;
 
     @Bean
     @Transactional
@@ -64,10 +64,10 @@ public class DataSeeder {
                 User seeker = userRepository.findByUsername("tanstan")
                         .orElseThrow(() -> new IllegalStateException("Seeker not found"));
 
-                Skill plumbing = skillRepository.findByName("Plumbing")
+                Skill plumbing = skillRepository.findByNameIgnoreCase("Plumbing")
                         .orElseThrow(() -> new IllegalStateException("Plumbing skill not found"));
 
-                Skill electrical = skillRepository.findByName("Electrical")
+                Skill electrical = skillRepository.findByNameIgnoreCase("Electrical")
                         .orElseThrow(() -> new IllegalStateException("Electrical skill not found"));
 
                 Job job1 = new Job();
@@ -80,7 +80,7 @@ public class DataSeeder {
                 job1.setStatus(JobStatusEnum.OPEN);
                 job1.setSeeker(seeker);
                 job1.setSkill(plumbing);
-                job1.setPublicId(jobIdGenerator.generateNextJobPublicId());
+                job1.setPublicId(jobIdGeneratorUtil.generateNextJobPublicId());
                 jobRepository.save(job1); // Save individually to avoid publicId conflict
 
                 Job job2 = new Job();
@@ -93,7 +93,7 @@ public class DataSeeder {
                 job2.setStatus(JobStatusEnum.OPEN);
                 job2.setSeeker(seeker);
                 job2.setSkill(electrical);
-                job2.setPublicId(jobIdGenerator.generateNextJobPublicId());
+                job2.setPublicId(jobIdGeneratorUtil.generateNextJobPublicId());
                 jobRepository.save(job2);
 
                 System.out.println("🛠️ Seeded 2 sample jobs for seeker: " + seeker.getUsername());

@@ -14,7 +14,7 @@ import site.shresthacyrus.neighborhoodhelpplatform.model.User;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.JobRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.SkillRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.service.JobService;
-import site.shresthacyrus.neighborhoodhelpplatform.util.JobIdGenerator;
+import site.shresthacyrus.neighborhoodhelpplatform.util.JobIdGeneratorUtil;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class JobServiceImpl implements JobService {
     private final JobMapper jobMapper;
     private final JobRepository jobRepository;
     private final SkillRepository skillRepository;
-    private final JobIdGenerator jobIdGenerator;
+    private final JobIdGeneratorUtil jobIdGeneratorUtil;
 
     @Transactional
     @Override
@@ -45,7 +45,7 @@ public class JobServiceImpl implements JobService {
         Skill existingSkill = skillRepository.findById(jobRequestDto.skillId())
                 .orElseThrow(() -> new IllegalArgumentException("Skill with id " + jobRequestDto.skillId() + " does not exist"));
 
-        String customPublicId = jobIdGenerator.generateNextJobPublicId();
+        String customPublicId = jobIdGeneratorUtil.generateNextJobPublicId();
         mappedJob.setPublicId(customPublicId);
         mappedJob.setSeeker(seeker);
         mappedJob.setSkill(existingSkill);

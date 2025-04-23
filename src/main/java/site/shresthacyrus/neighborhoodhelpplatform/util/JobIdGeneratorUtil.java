@@ -8,7 +8,7 @@ import java.time.Year;
 
 @Component
 @RequiredArgsConstructor
-public class JobIdGenerator {
+public class JobIdGeneratorUtil {
 
     private final JobRepository jobRepository;
 
