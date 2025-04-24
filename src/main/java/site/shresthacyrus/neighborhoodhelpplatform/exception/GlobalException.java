@@ -8,6 +8,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import site.shresthacyrus.neighborhoodhelpplatform.exception.job.InvalidPriceRangeException;
+import site.shresthacyrus.neighborhoodhelpplatform.exception.skill.SkillNotFoundException;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.user.DuplicateUserException;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.skill.DuplicateSkillException;
 
@@ -31,6 +33,16 @@ public class GlobalException {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiError> handleBadCredentials(BadCredentialsException e, HttpServletRequest request) {
         return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid username or password.", request.getRequestURI());
+    }
+
+    @ExceptionHandler(SkillNotFoundException.class)
+    public ResponseEntity<ApiError> handleSkillNotFound(SkillNotFoundException e, HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, e.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(InvalidPriceRangeException.class)
+    public ResponseEntity<ApiError> handleInvalidPriceRange(InvalidPriceRangeException e, HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, e.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
