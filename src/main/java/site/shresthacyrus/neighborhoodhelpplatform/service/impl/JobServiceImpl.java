@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import site.shresthacyrus.neighborhoodhelpplatform.auth.util.AuthUtils;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobRequestDto;
@@ -21,6 +22,7 @@ import site.shresthacyrus.neighborhoodhelpplatform.model.Skill;
 import site.shresthacyrus.neighborhoodhelpplatform.model.User;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.JobRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.SkillRepository;
+import site.shresthacyrus.neighborhoodhelpplatform.repository.UserRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.service.JobService;
 import site.shresthacyrus.neighborhoodhelpplatform.specification.JobSpecifications;
 import site.shresthacyrus.neighborhoodhelpplatform.util.JobIdGeneratorUtil;
@@ -32,6 +34,7 @@ public class JobServiceImpl implements JobService {
     private final JobMapper jobMapper;
     private final JobRepository jobRepository;
     private final SkillRepository skillRepository;
+    private final UserRepository userRepository;
     private final JobIdGeneratorUtil jobIdGeneratorUtil;
 
     @Transactional
@@ -137,6 +140,24 @@ public class JobServiceImpl implements JobService {
 
         // Delete it
         jobRepository.delete(job);
+    }
+
+    @Override
+    public Page<JobResponseDto> getJobsBySeekerUsername(String username, Pageable pageable) {
+        // 1. Find the user
+        User seeker = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User with username '" + username + "' not found."));
+
+        // 2. Ensure the user is a SEEKER
+        if (!seeker.getRole().name().equals("SEEKER")) {
+            throw new IllegalArgumentException("User '" + username + "' is not a Seeker.");
+        }
+
+        // 3. Get jobs posted by that seeker
+        Page<Job> jobs = jobRepository.findAllBySeekerId(seeker.getId(), pageable);
+
+        // 4. Map and return
+        return jobs.map(jobMapper::jobToJobResponseDto);
     }
     
     // Depreciated: No filters here

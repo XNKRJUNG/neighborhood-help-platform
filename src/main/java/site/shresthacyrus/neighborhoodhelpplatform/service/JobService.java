@@ -22,6 +22,9 @@ public interface JobService {
 
     void deleteJob(String publicId);
 
+    Page<JobResponseDto> getJobsBySeekerUsername(String username, Pageable pageable);
+
+
     // List<JobResponseDto> getAllJobs();
 
     // Get all jobs by zip code

@@ -67,4 +67,13 @@ public class JobController {
         jobService.deleteJob(publicId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content
     }
+
+    @GetMapping("/seeker/{username}")
+    public ResponseEntity<Page<JobResponseDto>> getJobsBySeeker(
+            @PathVariable("username") String username,
+            Pageable pageable
+    ) {
+        Page<JobResponseDto> jobs = jobService.getJobsBySeekerUsername(username, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(jobs);
+    }
 }

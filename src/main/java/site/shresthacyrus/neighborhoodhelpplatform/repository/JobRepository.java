@@ -1,5 +1,7 @@
 package site.shresthacyrus.neighborhoodhelpplatform.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +18,8 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
     Optional<Job> findByTitleIgnoreCaseAndSeekerId(String title, Long seekerId);
 
     List<Job> findAllByZipCode(String zipCode);
+
+    Page<Job> findAllBySeekerId(Long seekerId, Pageable pageable);
 
     @Query(value = "SELECT COUNT(*) FROM jobs WHERE EXTRACT(YEAR FROM created_at) = :year", nativeQuery = true)
     long countByYearCreated(@Param("year") int year);
