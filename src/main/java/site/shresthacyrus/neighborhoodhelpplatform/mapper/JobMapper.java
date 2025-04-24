@@ -29,5 +29,5 @@ public interface JobMapper {
     @Mapping(source = "seeker.legalFullName", target = "seekerFullName")
     JobResponseDto jobToJobResponseDto(Job job);
 
-    List<JobResponseDto> jobToJobResponseDtoList(List<Job> jobs);
+    List<JobResponseDto> jobsToJobResponseDtoList(List<Job> jobs);
 }

@@ -2,11 +2,19 @@ package site.shresthacyrus.neighborhoodhelpplatform.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import site.shresthacyrus.neighborhoodhelpplatform.auth.util.AuthUtils;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobRequestDto;
+import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobUpdateRequestDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.response.job.JobResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.job.DuplicateJobTitleException;
+import site.shresthacyrus.neighborhoodhelpplatform.exception.job.InvalidPriceRangeException;
+import site.shresthacyrus.neighborhoodhelpplatform.exception.job.JobNotFoundException;
+import site.shresthacyrus.neighborhoodhelpplatform.exception.skill.SkillNotFoundException;
 import site.shresthacyrus.neighborhoodhelpplatform.mapper.JobMapper;
 import site.shresthacyrus.neighborhoodhelpplatform.model.Job;
 import site.shresthacyrus.neighborhoodhelpplatform.model.Skill;
@@ -14,9 +22,8 @@ import site.shresthacyrus.neighborhoodhelpplatform.model.User;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.JobRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.SkillRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.service.JobService;
+import site.shresthacyrus.neighborhoodhelpplatform.specification.JobSpecifications;
 import site.shresthacyrus.neighborhoodhelpplatform.util.JobIdGeneratorUtil;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +40,7 @@ public class JobServiceImpl implements JobService {
 
         User seeker = AuthUtils.getCurrentUser();
 
-        // Check whether job already exists
+        // Check whether a job already exists
         jobRepository.findByTitleIgnoreCaseAndSeekerId(jobRequestDto.title(), seeker.getId())
                 .ifPresent(existingJob -> {
                     throw new DuplicateJobTitleException(
@@ -55,17 +62,99 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobResponseDto> findAllJobs() {
-        return List.of();
-    }
-
-    @Override
     public JobResponseDto findJobByPublicId(String publicId) {
-        return null;
+        // Check whether a job exists
+        Job existingJob = jobRepository.findJobByPublicId(publicId)
+                .orElseThrow(() -> new JobNotFoundException("Job with id " + publicId + " doesn't exists."));
+
+        return jobMapper.jobToJobResponseDto(existingJob);
     }
 
     @Override
-    public List<JobResponseDto> findAllJobsByZipCode(String zipCode) {
-        return List.of();
+    public Page<JobResponseDto> getFilteredJobs(Long skillId, String zipCode, String title,
+                                                Double minPrice, Double maxPrice, Pageable pageable) {
+
+        Specification<Job> spec = Specification.where(JobSpecifications.hasSkill(skillId))
+                .and(JobSpecifications.hasZipCode(zipCode))
+                .and(JobSpecifications.hasTitle(title))
+                .and(JobSpecifications.hasMinPrice(minPrice))
+                .and(JobSpecifications.hasMaxPrice(maxPrice));
+
+        Page<Job> jobPage = jobRepository.findAll(spec, pageable);
+
+        return jobPage.map(jobMapper::jobToJobResponseDto);
     }
+
+    @Override
+    @Transactional
+    public JobResponseDto updateJob(String publicId, JobUpdateRequestDto jobUpdateRequestDto) {
+        User currentUser = AuthUtils.getCurrentUser();
+
+        // Find the job by publicId
+        Job job = jobRepository.findJobByPublicId(publicId)
+                .orElseThrow(() -> new JobNotFoundException("Job with id " + publicId + " doesn't exist."));
+
+        // Ensure the current user is the job owner (seeker)
+        if (!job.getSeeker().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You are not authorized to update this job.");
+        }
+
+        // Validate price range
+        if (jobUpdateRequestDto.minPrice().compareTo(jobUpdateRequestDto.maxPrice()) > 0){
+            throw new InvalidPriceRangeException("Minimum price cannot be greater than maximum price.");
+        }
+
+        // Update allowed fields
+        job.setTitle(jobUpdateRequestDto.title());
+        job.setDescription(jobUpdateRequestDto.description());
+        job.setZipCode(jobUpdateRequestDto.zipCode());
+        job.setMinPrice(jobUpdateRequestDto.minPrice());
+        job.setMaxPrice(jobUpdateRequestDto.maxPrice());
+
+        // Validate skill exists
+        Skill skill = skillRepository.findById(jobUpdateRequestDto.skillId())
+                .orElseThrow(() -> new SkillNotFoundException("Skill with id " + jobUpdateRequestDto.skillId() + " does not exist"));
+        job.setSkill(skill);
+
+        // Save and return DTO
+        Job updatedJob = jobRepository.save(job);
+        return jobMapper.jobToJobResponseDto(updatedJob);
+    }
+
+    @Override
+    @Transactional
+    public void deleteJob(String publicId) {
+        User currentUser = AuthUtils.getCurrentUser();
+
+        // Find job by publicId
+        Job job = jobRepository.findJobByPublicId(publicId)
+                .orElseThrow(() -> new JobNotFoundException("Job with ID " + publicId + " not found."));
+
+        // Check ownership
+        if (!job.getSeeker().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You are not authorized to delete this job.");
+        }
+
+        // Delete it
+        jobRepository.delete(job);
+    }
+    
+    // Depreciated: No filters here
+    //    @Override
+    //    public List<JobResponseDto> getAllJobs() {
+    //        return jobMapper.jobsToJobResponseDtoList(jobRepository.findAll());
+    //    }
+
+    // Depreciated: getFilteredJob now implements this as well
+    //    @Override
+    //    public List<JobResponseDto> findAllJobsByZipCode(String zipCode) {
+    //        List<Job> existingJobs = jobRepository.findAllByZipCode(zipCode);
+    //
+    //        if (existingJobs.isEmpty()) {
+    //            throw new JobNotFoundException("No jobs found for zip code " + zipCode);
+    //        }
+    //
+    //        return jobMapper.jobsToJobResponseDtoList(existingJobs);
+    //    }
+
 }
