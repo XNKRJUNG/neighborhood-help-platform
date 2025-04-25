@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import site.shresthacyrus.neighborhoodhelpplatform.auth.util.AuthUtils;
 import site.shresthacyrus.neighborhoodhelpplatform.common.JobStatusEnum;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.bid.BidRequestDto;
+import site.shresthacyrus.neighborhoodhelpplatform.dto.request.bid.BidUpdateRequestDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.response.bid.BidResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.bid.BidAlreadyAcceptedException;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.bid.BidNotFoundException;
@@ -88,6 +89,54 @@ public class BidServiceImpl implements BidService {
         // Map to DTO
         return bids.map(bidMapper::bidToBidResponseDto);
     }
+
+    @Override
+    @Transactional
+    public BidResponseDto updateBid(Long bidId, BidUpdateRequestDto dto) {
+        User currentUser = AuthUtils.getCurrentUser();
+
+        Bid bid = bidRepository.findById(bidId)
+                .orElseThrow(() -> new BidNotFoundException("Bid not found."));
+
+        if (!bid.getHelper().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You are not authorized to edit this bid.");
+        }
+
+        if (bid.getAccepted()) {
+            throw new IllegalStateException("Accepted bids cannot be edited.");
+        }
+
+        if (dto.amount() != null) {
+            bid.setAmount(dto.amount());
+        }
+
+        if (dto.message() != null && !dto.message().isBlank()) {
+            bid.setMessage(dto.message());
+        }
+
+        Bid updatedBid = bidRepository.save(bid);
+        return bidMapper.bidToBidResponseDto(updatedBid);
+    }
+
+    @Override
+    @Transactional
+    public void deleteBid(Long bidId) {
+        User currentUser = AuthUtils.getCurrentUser();
+
+        Bid bid = bidRepository.findById(bidId)
+                .orElseThrow(() -> new BidNotFoundException("Bid with ID " + bidId + " not found."));
+
+        if (!bid.getHelper().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You are not authorized to delete this bid.");
+        }
+
+        if (bid.getAccepted()) {
+            throw new IllegalStateException("Accepted bids cannot be deleted.");
+        }
+
+        bidRepository.delete(bid);
+    }
+
 
     @Override
     @Transactional
