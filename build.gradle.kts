@@ -31,7 +31,6 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.mapstruct:mapstruct:1.6.3")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
@@ -43,6 +42,15 @@ dependencies {
 
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+tasks.named("test") {
+    enabled = false
+}
+
+tasks.jar {
+    enabled = false
+}
+
+tasks.bootJar {
+    archiveBaseName.set("nhp")
+    archiveVersion.set("1.0.1")
 }

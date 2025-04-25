@@ -32,4 +32,20 @@ public class SkillController {
         SkillResponseDto createdSkill = skillService.createSkill(skillRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSkill);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<SkillResponseDto> updateSkill(
+            @PathVariable Long id,
+            @Valid @RequestBody SkillRequestDto dto
+    ) {
+        return ResponseEntity.ok(skillService.updateSkill(id, dto));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSkill(@PathVariable Long id) {
+        skillService.deleteSkill(id);
+        return ResponseEntity.noContent().build();
+    }
 }

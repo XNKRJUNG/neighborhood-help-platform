@@ -10,4 +10,8 @@ public interface SkillService {
     List<SkillResponseDto> getAllSkills();
 
     SkillResponseDto createSkill(SkillRequestDto skillRequestDto);
+
+    SkillResponseDto updateSkill(Long id, SkillRequestDto dto);
+
+    void deleteSkill(Long id);
 }

@@ -1,0 +1,33 @@
+# === Gradle build cache ===
+.gradle
+build
+!build/libs/nhp-1.0.1.jar
+
+# === IDEs ===
+.idea
+*.iml
+*.ipr
+*.iws
+.vscode
+
+# === OS junk ===
+.DS_Store
+Thumbs.db
+
+# === Logs and temp ===
+*.log
+*.tmp
+*.bak
+
+# === Tests and reports ===
+test-results/
+test-output/
+reports/
+
+# === Git ===
+.git
+.gitignore
+
+# === Docker ===
+docker-compose.override.yml
+.env
