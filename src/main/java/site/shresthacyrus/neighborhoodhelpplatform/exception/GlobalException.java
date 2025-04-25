@@ -8,6 +8,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import site.shresthacyrus.neighborhoodhelpplatform.exception.bid.BidAlreadyAcceptedException;
+import site.shresthacyrus.neighborhoodhelpplatform.exception.bid.BidNotFoundException;
+import site.shresthacyrus.neighborhoodhelpplatform.exception.job.InvalidJobStatusTransitionException;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.job.InvalidPriceRangeException;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.skill.SkillNotFoundException;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.user.DuplicateUserException;
@@ -22,12 +25,12 @@ public class GlobalException {
 
     @ExceptionHandler(DuplicateUserException.class)
     public ResponseEntity<ApiError> handleDuplicateUserException(DuplicateUserException e, HttpServletRequest request) {
-        return buildResponse(HttpStatus.BAD_REQUEST, e.getMessage(), request.getRequestURI());
+        return buildResponse(HttpStatus.CONFLICT, e.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(DuplicateSkillException.class)
     public ResponseEntity<ApiError> handleDuplicateSkillException(DuplicateSkillException e, HttpServletRequest request) {
-        return buildResponse(HttpStatus.BAD_REQUEST, e.getMessage(), request.getRequestURI());
+        return buildResponse(HttpStatus.CONFLICT, e.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(BadCredentialsException.class)
@@ -42,6 +45,21 @@ public class GlobalException {
 
     @ExceptionHandler(InvalidPriceRangeException.class)
     public ResponseEntity<ApiError> handleInvalidPriceRange(InvalidPriceRangeException e, HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, e.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(BidNotFoundException.class)
+    public ResponseEntity<ApiError> handleBidNotFound(BidNotFoundException e, HttpServletRequest request) {
+        return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(BidAlreadyAcceptedException.class)
+    public ResponseEntity<ApiError> handleBidAlreadyAccepted(BidAlreadyAcceptedException e, HttpServletRequest request) {
+        return buildResponse(HttpStatus.CONFLICT, e.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(InvalidJobStatusTransitionException.class)
+    public ResponseEntity<ApiError> handleInvalidJobTransition(InvalidJobStatusTransitionException e, HttpServletRequest request) {
         return buildResponse(HttpStatus.BAD_REQUEST, e.getMessage(), request.getRequestURI());
     }
 
