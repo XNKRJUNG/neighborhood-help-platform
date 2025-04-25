@@ -1,6 +1,7 @@
 package site.shresthacyrus.neighborhoodhelpplatform.specification;
 
 import org.springframework.data.jpa.domain.Specification;
+import site.shresthacyrus.neighborhoodhelpplatform.common.JobStatusEnum;
 import site.shresthacyrus.neighborhoodhelpplatform.model.Job;
 
 public class JobSpecifications {
@@ -29,4 +30,10 @@ public class JobSpecifications {
         return (root, query, cb) ->
                 maxPrice == null ? null : cb.lessThanOrEqualTo(root.get("price"), maxPrice);
     }
+
+    public static Specification<Job> hasStatus(JobStatusEnum status) {
+        return (root, query, cb) ->
+                status == null ? null : cb.equal(root.get("status"), status);
+    }
+
 }

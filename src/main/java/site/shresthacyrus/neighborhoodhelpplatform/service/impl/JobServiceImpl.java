@@ -86,13 +86,14 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Page<JobResponseDto> getFilteredJobs(Long skillId, String zipCode, String title,
-                                                Double minPrice, Double maxPrice, Pageable pageable) {
+                                                Double minPrice, Double maxPrice, JobStatusEnum status, Pageable pageable) {
 
         Specification<Job> spec = Specification.where(JobSpecifications.hasSkill(skillId))
                 .and(JobSpecifications.hasZipCode(zipCode))
                 .and(JobSpecifications.hasTitle(title))
                 .and(JobSpecifications.hasMinPrice(minPrice))
-                .and(JobSpecifications.hasMaxPrice(maxPrice));
+                .and(JobSpecifications.hasMaxPrice(maxPrice))
+                .and(JobSpecifications.hasStatus(status));
 
         Page<Job> jobPage = jobRepository.findAll(spec, pageable);
 

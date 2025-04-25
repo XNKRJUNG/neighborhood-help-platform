@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
+import site.shresthacyrus.neighborhoodhelpplatform.common.JobStatusEnum;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobRequestDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobUpdateRequestDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.response.job.JobDetailResponseDto;
@@ -31,9 +32,11 @@ public class JobController {
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) JobStatusEnum status,
+
             Pageable pageable
     ) {
-        Page<JobResponseDto> jobs = jobService.getFilteredJobs(skillId, zipCode, title, minPrice, maxPrice, pageable);
+        Page<JobResponseDto> jobs = jobService.getFilteredJobs(skillId, zipCode, title, minPrice, maxPrice, status, pageable);
         return ResponseEntity.ok(jobs);
     }
 
