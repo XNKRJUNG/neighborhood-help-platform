@@ -15,7 +15,7 @@ public interface BidMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "helper", ignore = true)
-    @Mapping(source = "jobPublicId", target = "job.publicId")
+    @Mapping(target = "job", ignore = true)
     Bid bidRequestDtoToBid(BidRequestDto bidRequestDto);
 
     @Mapping(source = "job.publicId", target = "jobPublicId")
@@ -23,6 +23,8 @@ public interface BidMapper {
     @Mapping(source = "helper.legalFullName", target = "helperFullName")
     BidResponseDto bidToBidResponseDto(Bid bid);
 
-    List<BidResponseDto> bidToBidResponseDtoList(List<Bid> bids);
+    List<BidResponseDto> bidsToBidResponseDtoList(List<Bid> bids);
 
 }
+
+

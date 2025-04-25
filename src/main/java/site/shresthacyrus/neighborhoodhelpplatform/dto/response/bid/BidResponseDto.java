@@ -10,6 +10,7 @@ public record BidResponseDto(
         String helperFullName,
         BigDecimal amount,
         String message,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        Boolean accepted
 ) {
 }

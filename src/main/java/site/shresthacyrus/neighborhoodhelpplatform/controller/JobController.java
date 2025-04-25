@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobRequestDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobUpdateRequestDto;
+import site.shresthacyrus.neighborhoodhelpplatform.dto.response.job.JobDetailResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.response.job.JobResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.service.JobService;
 
@@ -38,9 +39,9 @@ public class JobController {
 
     // Retrieve a single job by publicId
     @GetMapping("/{publicId}")
-    public ResponseEntity<JobResponseDto> findJobByPublicId(@PathVariable("publicId") String publicId){
-        JobResponseDto jobResponseDto = jobService.findJobByPublicId(publicId);
-        return ResponseEntity.status(HttpStatus.OK).body(jobResponseDto);
+    public ResponseEntity<JobDetailResponseDto> findJobByPublicId(@PathVariable String publicId) {
+        JobDetailResponseDto job = jobService.findJobDetailByPublicId(publicId);
+        return ResponseEntity.ok(job);
     }
 
     // Create job (SEEKER only)
@@ -75,5 +76,19 @@ public class JobController {
     ) {
         Page<JobResponseDto> jobs = jobService.getJobsBySeekerUsername(username, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(jobs);
+    }
+
+    @PreAuthorize("hasRole('SEEKER')")
+    @PostMapping("/{publicId}/complete")
+    public ResponseEntity<JobDetailResponseDto> completeJob(@PathVariable("publicId") String publicId) {
+        JobDetailResponseDto completed = jobService.completeJob(publicId);
+        return ResponseEntity.status(HttpStatus.OK).body(completed);
+    }
+
+    @PreAuthorize("hasRole('SEEKER')")
+    @PostMapping("/{publicId}/cancel")
+    public ResponseEntity<JobDetailResponseDto> cancelJob(@PathVariable String publicId) {
+        JobDetailResponseDto canceled = jobService.cancelJob(publicId);
+        return ResponseEntity.status(HttpStatus.OK).body(canceled);
     }
 }

@@ -23,6 +23,8 @@ public class Bid {
     private String message;
     @Column(nullable = false)
     private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private Boolean accepted = false;
 
     // === Relationships ===
 

@@ -9,10 +9,13 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import site.shresthacyrus.neighborhoodhelpplatform.auth.util.AuthUtils;
+import site.shresthacyrus.neighborhoodhelpplatform.common.JobStatusEnum;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobRequestDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobUpdateRequestDto;
+import site.shresthacyrus.neighborhoodhelpplatform.dto.response.job.JobDetailResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.response.job.JobResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.job.DuplicateJobTitleException;
+import site.shresthacyrus.neighborhoodhelpplatform.exception.job.InvalidJobStatusTransitionException;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.job.InvalidPriceRangeException;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.job.JobNotFoundException;
 import site.shresthacyrus.neighborhoodhelpplatform.exception.skill.SkillNotFoundException;
@@ -26,6 +29,7 @@ import site.shresthacyrus.neighborhoodhelpplatform.repository.UserRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.service.JobService;
 import site.shresthacyrus.neighborhoodhelpplatform.specification.JobSpecifications;
 import site.shresthacyrus.neighborhoodhelpplatform.util.JobIdGeneratorUtil;
+import site.shresthacyrus.neighborhoodhelpplatform.util.JobStatusTransitionValidator;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +75,13 @@ public class JobServiceImpl implements JobService {
                 .orElseThrow(() -> new JobNotFoundException("Job with id " + publicId + " doesn't exists."));
 
         return jobMapper.jobToJobResponseDto(existingJob);
+    }
+
+    @Override
+    public JobDetailResponseDto findJobDetailByPublicId(String publicId) {
+        Job job = jobRepository.findJobByPublicId(publicId)
+                .orElseThrow(() -> new JobNotFoundException("Job not found."));
+        return jobMapper.jobToJobDetailResponseDto(job);
     }
 
     @Override
@@ -144,22 +155,75 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Page<JobResponseDto> getJobsBySeekerUsername(String username, Pageable pageable) {
-        // 1. Find the user
+        // Find the user
         User seeker = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User with username '" + username + "' not found."));
 
-        // 2. Ensure the user is a SEEKER
+        // Ensure the user is a SEEKER
         if (!seeker.getRole().name().equals("SEEKER")) {
             throw new IllegalArgumentException("User '" + username + "' is not a Seeker.");
         }
 
-        // 3. Get jobs posted by that seeker
+        // Get jobs posted by that seeker
         Page<Job> jobs = jobRepository.findAllBySeekerId(seeker.getId(), pageable);
 
-        // 4. Map and return
+        // Map and return
         return jobs.map(jobMapper::jobToJobResponseDto);
     }
-    
+
+    @Override
+    @Transactional
+    public JobDetailResponseDto completeJob(String publicId) {
+        User currentUser = AuthUtils.getCurrentUser();
+
+        // Find the job
+        Job job = jobRepository.findJobByPublicId(publicId)
+                .orElseThrow(() -> new JobNotFoundException("Job with ID " + publicId + " not found."));
+
+        // Ensure the current user is the job owner (seeker)
+        if (!job.getSeeker().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You are not authorized to complete this job.");
+        }
+
+        // Validate that job is eligible to be completed
+        if (!JobStatusTransitionValidator.isValidTransition(job.getStatus(), JobStatusEnum.COMPLETED)) {
+            throw new InvalidJobStatusTransitionException(
+                    "Cannot mark job as COMPLETED from status: " + job.getStatus()
+            );
+        }
+
+        // Set status to COMPLETED
+        job.setStatus(JobStatusEnum.COMPLETED);
+        Job updatedJob = jobRepository.save(job);
+
+        // Return mapped response
+        return jobMapper.jobToJobDetailResponseDto(updatedJob); // or use JobDetailResponseDto if preferred
+    }
+
+    @Override
+    @Transactional
+    public JobDetailResponseDto cancelJob(String publicId) {
+        User currentUser = AuthUtils.getCurrentUser();
+
+        Job job = jobRepository.findJobByPublicId(publicId)
+                .orElseThrow(() -> new JobNotFoundException("Job with ID " + publicId + " not found."));
+
+        if (!job.getSeeker().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You are not authorized to cancel this job.");
+        }
+
+        if (!JobStatusTransitionValidator.isValidTransition(job.getStatus(), JobStatusEnum.CANCELED)) {
+            throw new InvalidJobStatusTransitionException(
+                    "Cannot mark job as CANCELED from status: " + job.getStatus()
+            );
+        }
+
+        job.setStatus(JobStatusEnum.CANCELED);
+        Job updatedJob = jobRepository.save(job);
+
+        return jobMapper.jobToJobDetailResponseDto(updatedJob);
+    }
+
     // Depreciated: No filters here
     //    @Override
     //    public List<JobResponseDto> getAllJobs() {

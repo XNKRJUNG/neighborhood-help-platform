@@ -4,12 +4,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.job.JobRequestDto;
+import site.shresthacyrus.neighborhoodhelpplatform.dto.response.job.JobDetailResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.response.job.JobResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.model.Job;
 
 import java.util.List;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {BidMapper.class, SkillMapper.class, UserMapper.class})
 public interface JobMapper {
 
     // Map JobRequestDto → Job entity
@@ -24,10 +25,12 @@ public interface JobMapper {
     @Mapping(source = "skillId", target = "skill.id")
     Job jobRequestDtoToJob(JobRequestDto jobRequestDto);
 
-    @Mapping(source = "publicId", target = "publicId")
     @Mapping(source = "skill.name", target = "skillName")
     @Mapping(source = "seeker.legalFullName", target = "seekerFullName")
     JobResponseDto jobToJobResponseDto(Job job);
 
     List<JobResponseDto> jobsToJobResponseDtoList(List<Job> jobs);
+
+    JobDetailResponseDto jobToJobDetailResponseDto(Job job);
+
 }

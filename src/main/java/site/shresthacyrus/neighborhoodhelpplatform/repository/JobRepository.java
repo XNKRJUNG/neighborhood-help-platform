@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import site.shresthacyrus.neighborhoodhelpplatform.dto.response.job.JobDetailResponseDto;
 import site.shresthacyrus.neighborhoodhelpplatform.model.Job;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
@@ -17,7 +17,7 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
 
     Optional<Job> findByTitleIgnoreCaseAndSeekerId(String title, Long seekerId);
 
-    List<Job> findAllByZipCode(String zipCode);
+    JobDetailResponseDto findJobDetailByPublicId(String publicId);
 
     Page<Job> findAllBySeekerId(Long seekerId, Pageable pageable);
 
@@ -27,4 +27,5 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
     // ⚠️ You do NOT need to define this manually:
     // Page<Job> findAll(Specification<Job> spec, Pageable pageable);
     // It comes automatically from JpaSpecificationExecutor
+    // List<Job> findAllByZipCode(String zipCode);
 }

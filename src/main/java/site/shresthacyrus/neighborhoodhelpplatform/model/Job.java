@@ -64,7 +64,7 @@ public class Job {
     private List<Bid> bids;
 
     // Accepted bid (optional)
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "accepted_bid_id")
     private Bid acceptedBid;
 

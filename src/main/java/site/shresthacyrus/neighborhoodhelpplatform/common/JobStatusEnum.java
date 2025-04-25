@@ -2,7 +2,7 @@ package site.shresthacyrus.neighborhoodhelpplatform.common;
 
 public enum JobStatusEnum {
     OPEN,
-    ACCEPTED,
+    IN_PROGRESS,
     COMPLETED,
     CANCELED
 }
