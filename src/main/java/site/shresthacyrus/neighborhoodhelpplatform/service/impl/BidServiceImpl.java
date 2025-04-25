@@ -55,6 +55,23 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
+    public BidResponseDto getBidById(Long bidId) {
+        User currentUser = AuthUtils.getCurrentUser();
+
+        Bid bid = bidRepository.findById(bidId)
+                .orElseThrow(() -> new BidNotFoundException("Bid not found."));
+
+        boolean isHelper = bid.getHelper().getId().equals(currentUser.getId());
+        boolean isSeeker = bid.getJob().getSeeker().getId().equals(currentUser.getId());
+
+        if (!isHelper && !isSeeker) {
+            throw new AccessDeniedException("You are not authorized to view this bid.");
+        }
+
+        return bidMapper.bidToBidResponseDto(bid);
+    }
+
+    @Override
     public List<BidResponseDto> getBidsForJob(String jobPublicId) {
         User currentUser = AuthUtils.getCurrentUser();
 

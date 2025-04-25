@@ -12,6 +12,8 @@ public interface BidService {
 
     BidResponseDto createBid(BidRequestDto bidRequestDto, String jobPublicId);
 
+    BidResponseDto getBidById(Long bidId);
+
     List<BidResponseDto> getBidsForJob(String jobPublicId);
 
     Page<BidResponseDto> getMyBids(Pageable pageable);

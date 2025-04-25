@@ -25,6 +25,13 @@ public class HelperBidController {
         return ResponseEntity.status(HttpStatus.OK).body(myBids);
     }
 
+    @PreAuthorize("hasAnyRole('HELPER', 'SEEKER')")
+    @GetMapping("/{bidId}")
+    public ResponseEntity<BidResponseDto> getBidById(@PathVariable Long bidId) {
+        BidResponseDto bid = bidService.getBidById(bidId);
+        return ResponseEntity.status(HttpStatus.OK).body(bid);
+    }
+
     @PreAuthorize("hasRole('HELPER')")
     @PatchMapping("/{bidId}")
     public ResponseEntity<BidResponseDto> updateBid(
