@@ -11,14 +11,14 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiResponse<T> {
+public class ApiResponder<T> {
     private boolean success;
     private String message;
     private T data;
     private Instant timestamp;
 
-    public static <T> ApiResponse<T> success(T data, String message) {
-        return ApiResponse.<T>builder()
+    public static <T> ApiResponder<T> success(T data, String message) {
+        return ApiResponder.<T>builder()
                 .success(true)
                 .message(message)
                 .data(data)
@@ -26,8 +26,8 @@ public class ApiResponse<T> {
                 .build();
     }
 
-    public static <T> ApiResponse<T> failure(String message) {
-        return ApiResponse.<T>builder()
+    public static <T> ApiResponder<T> failure(String message) {
+        return ApiResponder.<T>builder()
                 .success(false)
                 .message(message)
                 .timestamp(Instant.now())
