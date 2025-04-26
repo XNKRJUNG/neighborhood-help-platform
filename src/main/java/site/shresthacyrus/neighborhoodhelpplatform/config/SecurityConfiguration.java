@@ -26,12 +26,23 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(CsrfConfigurer::disable) // As JWT is state-less, we can disable CSRF
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/**").permitAll() // login, signup
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll() // public user profile
-                        .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()  // public job browsing
-                        .anyRequest().authenticated() // everything else requires auth
+        http
+                .cors(cors -> cors
+                        .configurationSource(request -> {
+                            var config = new org.springframework.web.cors.CorsConfiguration();
+                            config.setAllowedOrigins(java.util.List.of("http://localhost:3000")); // <-- your frontend URL
+                            config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+                            config.setAllowedHeaders(java.util.List.of("Authorization", "Content-Type"));
+                            config.setAllowCredentials(true); // Optional: only if using cookies
+                            return config;
+                        })
+                )
+                .csrf(CsrfConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider)
@@ -39,5 +50,6 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
 
 }

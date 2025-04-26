@@ -3,7 +3,7 @@ package site.shresthacyrus.neighborhoodhelpplatform.dto.response;
 import site.shresthacyrus.neighborhoodhelpplatform.common.RoleEnum;
 
 public record UserResponseDto(
-
+        Long id,
         String username,
         String email,
         String phone,

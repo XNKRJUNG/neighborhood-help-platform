@@ -2,6 +2,7 @@ package site.shresthacyrus.neighborhoodhelpplatform.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.UserRequestDto;
@@ -49,10 +50,16 @@ public class UserServiceImpl implements UserService {
 //        List<User> users = userRepository.findAll();
 //        return userMapper.userToUserResponseDtoList(users);
 //    }
-@Override
-public List<UserResponseDto> findAllUsers() {
-    List<User> users = userRepository.findAll();
-    System.out.println("Fetched from DB: " + users.size());
-    return userMapper.userToUserResponseDtoList(users);
-}
+    @Override
+    public List<UserResponseDto> findAllUsers() {
+        List<User> users = userRepository.findAll();
+        System.out.println("Fetched from DB: " + users.size());
+        return userMapper.userToUserResponseDtoList(users);
+    }
+
+    @Override
+    public UserResponseDto getCurrentUser(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return userMapper.userToUserResponseDto(user);
+    }
 }

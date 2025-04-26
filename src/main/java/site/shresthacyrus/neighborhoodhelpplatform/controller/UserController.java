@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import site.shresthacyrus.neighborhoodhelpplatform.common.ApiResponse;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.request.UserRequestDto;
 import site.shresthacyrus.neighborhoodhelpplatform.dto.response.UserResponseDto;
+import site.shresthacyrus.neighborhoodhelpplatform.mapper.UserMapper;
 import site.shresthacyrus.neighborhoodhelpplatform.model.User;
 import site.shresthacyrus.neighborhoodhelpplatform.repository.UserRepository;
 import site.shresthacyrus.neighborhoodhelpplatform.service.UserService;
@@ -27,6 +30,13 @@ public class UserController {
         List<UserResponseDto> userResponseDtos = userService.findAllUsers();
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDtos);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponseDto>> getCurrentUser(Authentication authentication) {
+        UserResponseDto userResponseDto = userService.getCurrentUser(authentication);
+        return ResponseEntity.ok(ApiResponse.success(userResponseDto, "Current user fetched successfully"));
+    }
+
 
     // Create a User
 //    @PostMapping

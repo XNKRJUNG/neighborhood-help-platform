@@ -22,6 +22,7 @@ public class BidController {
     private final BidService bidService;
 
     // Create a Bid (HELPER only)
+    @PreAuthorize("hasRole('HELPER')")
     @PostMapping
     public ResponseEntity<BidResponseDto> createBid(
             @PathVariable("jobPublicId") String jobPublicId,
