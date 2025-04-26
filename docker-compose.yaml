@@ -20,7 +20,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    build: .
+    image: xnkrjungg/neighborhood-help-platform-app:latest
     ports:
       - "8080:8080"
     depends_on:
