@@ -126,27 +126,27 @@ http://localhost:8080/v3/api-docs
 ### Signup
 
 Helper Signup
-![Helper Signup](./images/Screenshot 2025-04-26 061926.png)
+![Helper Signup](./images/Screenshot_2025-04-26_061926.png)
 
 
 Seeker Signup
-![Seeker Signup](./images/Screenshot 2025-04-26 061931.png)
+![Seeker Signup](./images/Screenshot_2025-04-26_061931.png)
 
 
 Admin Signup
-![Admin Signup](./images/Screenshot 2025-04-26 061938.png)
+![Admin Signup](./images/Screenshot_2025-04-26_061938.png)
 
 
 ### Login
 
 Helper Login
-![Helper Login](./images/Screenshot 2025-04-26 062106.png)
+![Helper Login](./images/Screenshot_2025-04-26_062106.png)
 
 Seeker Login
-![Seeker Login](./images/Screenshot 2025-04-26 062113.png)
+![Seeker Login](./images/Screenshot_2025-04-26_062113.png)
 
 Admin Login
-![Admin Login](./images/Screenshot 2025-04-26 062122.png)
+![Admin Login](./images/Screenshot_2025-04-26_062122.png)
 
 ---
 
@@ -155,16 +155,16 @@ Admin Login
 ---
 
 Get all Skills
-![Get all Skills](./images/Screenshot 2025-04-26 062308.png)
+![Get all Skills](./images/Screenshot_2025-04-26_062308.png)
 
 Create Skill (Admin Only)
-![Create Skill (Admin Only)](./images/Screenshot 2025-04-26 062344.png)
+![Create Skill (Admin Only)](./images/Screenshot_2025-04-26_062344.png)
 
 Update Skill (Admin Only)
-![Update Skill (Admin Only)](./images/Screenshot 2025-04-26 062437.png)
+![Update Skill (Admin Only)](./images/Screenshot_2025-04-26_062437.png)
 
 Delete Skill (Admin Only)
-![Delete Skill (Admin Only)](./images/Screenshot 2025-04-26 062500.png)
+![Delete Skill (Admin Only)](./images/Screenshot_2025-04-26_062500.png)
 
 ---
 
@@ -173,32 +173,32 @@ Delete Skill (Admin Only)
 ---
 
 Create a Job (Seeker Only)
-![Create a Job (Seeker Only)](./images/Screenshot 2025-04-26 062703.png)
+![Create a Job (Seeker Only)](./images/Screenshot_2025-04-26_062703.png)
 
 Get Jobs (Filtered)
-![Get Jobs (Filtered)](./images/Screenshot 2025-04-26 062841.png)
+![Get Jobs (Filtered)](./images/Screenshot_2025-04-26_062841.png)
 
 Get Job by Public ID
-![Get Job by Public ID](./images/Screenshot 2025-04-26 063459.png)
-![Signup](./images/Screenshot 2025-04-26 062944.png)
+![Get Job by Public ID](./images/Screenshot_2025-04-26_063459.png)
+![Signup](./images/Screenshot_2025-04-26_062944.png)
 
 Update a Job
-![Update a Job](./images/Screenshot 2025-04-26 064146.png)
+![Update a Job](./images/Screenshot_2025-04-26_064146.png)
 
 Delete a Job
-![Delete a Job](./images/Screenshot 2025-04-26 064244.png)
+![Delete a Job](./images/Screenshot_2025-04-26_064244.png)
 
 Complete a Job
-![Complete a Job](./images/Screenshot 2025-04-26 063940.png)
+![Complete a Job](./images/Screenshot_2025-04-26_063940.png)
 
 Cancel a Job
-![Cancel a Job](./images/Screenshot 2025-04-26 063637.png)
+![Cancel a Job](./images/Screenshot_2025-04-26_063637.png)
 
 Cancel a Completed Job (Error Case)
-![Cancel a Completed Job (Error Case)](./images/Screenshot 2025-04-26 063951.png)
+![Cancel a Completed Job (Error Case)](./images/Screenshot_2025-04-26_063951.png)
 
 Duplicate Job Creation (Error Case)
-![Duplicate Job Creation (Error Case)](./images/Screenshot 2025-04-26 063704.png)
+![Duplicate Job Creation (Error Case)](./images/Screenshot_2025-04-26_063704.png)
 
 ---
 
@@ -207,13 +207,13 @@ Duplicate Job Creation (Error Case)
 ---
 
 Create Bid (Helper Only)
-![Create Bid (Helper Only)](./images/Screenshot 2025-04-26 063216.png)
+![Create Bid (Helper Only)](./images/Screenshot_2025-04-26_063216.png)
 
 Get Bids for a Job (Seeker Only)
-![Get Bids for a Job (Seeker Only)](./images/Screenshot 2025-04-26 063404.png)
+![Get Bids for a Job (Seeker Only)](./images/Screenshot_2025-04-26_063404.png)
 
 Accept a Bid (Seeker Only)
-![Accept a Bid (Seeker Only)](./images/Screenshot 2025-04-26 063447.png)
+![Accept a Bid (Seeker Only)](./images/Screenshot_2025-04-26_063447.png)
 
 ---
 
@@ -222,10 +222,10 @@ Accept a Bid (Seeker Only)
 ---
 
 Get Current User Details (Authenticated)
-![Get Current User Details (Authenticated)](./images/Screenshot 2025-04-26 064608.png)
+![Get Current User Details (Authenticated)](./images/Screenshot_2025-04-26_064608.png)
 
 Get All Users (Admin Only)
-![Get All Users (Admin Only)](./images/Screenshot 2025-04-26 064954.png)
+![Get All Users (Admin Only)](./images/Screenshot_2025-04-26_064954.png)
 
 
 
